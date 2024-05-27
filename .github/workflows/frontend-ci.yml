@@ -61,7 +61,7 @@ jobs:
         working-directory: ./starter/frontend
 
       - name: Run tests
-        run: npm run test
+        run: npm run test --fix
         working-directory: ./starter/frontend
 
   build:
