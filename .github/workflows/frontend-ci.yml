@@ -34,7 +34,7 @@ jobs:
         working-directory: ./starter/frontend
 
       - name: Run eslint
-        run: npm run lint
+        run: npm run lint --fix
         working-directory: ./starter/frontend
 
   test:
@@ -61,7 +61,7 @@ jobs:
         working-directory: ./starter/frontend
 
       - name: Run tests
-        run: npm run test --fix
+        run: npm run test
         working-directory: ./starter/frontend
 
   build:
