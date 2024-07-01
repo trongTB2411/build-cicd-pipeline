@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'starter/frontend/**'
+      - 'frontend/**'
   workflow_dispatch:
 
 jobs:
@@ -123,5 +123,3 @@ jobs:
         run: |
           kustomize build | kubectl apply -f -
         working-directory: ./frontend/k8s
-  
-  

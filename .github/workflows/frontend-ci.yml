@@ -7,7 +7,7 @@ on:
     branches:
       - main
     paths:
-      - 'starter/frontend/**'
+      - 'frontend/**'
 
 jobs:
   lint:
@@ -21,21 +21,21 @@ jobs:
         with:
           node-version: latest
 
-      # - name: Cache Node.js modules
-      #   uses: actions/cache@v2
-      #   with:
-      #     path: ~/.npm
-      #     key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-node-
+      - name: Cache Node.js modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Install dependencies
         run: npm ci
-        working-directory: ./starter/frontend
+        working-directory: ./frontend
 
       - name: Run eslint
-        run: npm run lint --fix
-        working-directory: ./starter/frontend
+        run: npm run lint
+        working-directory: ./frontend
 
   test:
     runs-on: ubuntu-latest
@@ -48,21 +48,21 @@ jobs:
         with:
           node-version: latest
 
-      # - name: Cache Node.js modules
-      #   uses: actions/cache@v2
-      #   with:
-      #     path: ~/.npm
-      #     key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-node-
+      - name: Cache Node.js modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Install dependencies
         run: npm ci
-        working-directory: ./starter/frontend
+        working-directory: ./frontend
 
       - name: Run tests
         run: npm run test
-        working-directory: ./starter/frontend
+        working-directory: ./frontend
 
   build:
     runs-on: ubuntu-latest
@@ -76,18 +76,18 @@ jobs:
         with:
           node-version: latest
 
-      # - name: Cache Node.js modules
-      #   uses: actions/cache@v2
-      #   with:
-      #     path: ~/.npm
-      #     key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-node-
+      - name: Cache Node.js modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Install dependencies
         run: npm ci
-        working-directory: ./starter/frontend
+        working-directory: ./frontend
 
       - name: Build Docker image
         run: |
-          docker build -t mp-frontend:latest ./starter/frontend
+          docker build -t mp-frontend:latest ./frontend
