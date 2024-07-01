@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'frontend/**'
+      - '/starter/frontend/**'
   workflow_dispatch:
 
 jobs:
@@ -30,11 +30,11 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-        working-directory: ./frontend
+        working-directory: ./starter/frontend
 
       - name: Run eslint
         run: npm run lint
-        working-directory: ./frontend
+        working-directory: ./starter/frontend
 
   test:
     runs-on: ubuntu-latest
@@ -57,11 +57,11 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-        working-directory: ./frontend
+        working-directory: ./starter/frontend
 
       - name: Run tests
         run: npm run test
-        working-directory: ./frontend
+        working-directory: ./starter/frontend
 
   build:
     runs-on: ubuntu-latest
@@ -71,7 +71,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Build Docker image
-        run: docker build -t movie-picture-frontend:${{ github.sha }} --build-arg REACT_APP_MOVIE_API_URL=${{ secrets.REACT_APP_MOVIE_API_URL }} ./frontend
+        run: docker build -t course-4-frontend:${{ github.sha }} --build-arg REACT_APP_MOVIE_API_URL=${{ secrets.REACT_APP_MOVIE_API_URL }} ./starter/frontend
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -87,8 +87,8 @@ jobs:
 
       - name: Push to ECR
         run: |
-          docker tag movie-picture-frontend:${{ github.sha }} ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/movie-picture-frontend:${{ github.sha }}
-          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/movie-picture-frontend:${{ github.sha }}
+          docker tag course-4-frontend:${{ github.sha }} ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/course-4-frontend:${{ github.sha }}
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/course-4-frontend:${{ github.sha }}
 
   deploy:
     runs-on: ubuntu-latest
@@ -117,9 +117,9 @@ jobs:
       - name: Update Kubernetes manifests
         run: |
           kustomize edit set image frontend=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/mp-frontend:${{ github.sha }}
-        working-directory: ./frontend/k8s
+        working-directory: ./starter/frontend/k8s
 
       - name: Apply Kubernetes manifests
         run: |
           kustomize build | kubectl apply -f -
-        working-directory: ./frontend/k8s
+        working-directory: ./starter/frontend/k8s

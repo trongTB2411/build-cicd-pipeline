@@ -25,11 +25,11 @@ jobs:
 
       - name: Install dependencies
         run: pipenv install --dev
-        working-directory: ./backend
+        working-directory: ./starter/backend
 
       - name: Run linting
         run: pipenv run lint
-        working-directory: ./backend
+        working-directory: ./starter/backend
 
   test:
     runs-on: ubuntu-latest
@@ -47,11 +47,11 @@ jobs:
 
       - name: Install dependencies
         run: pipenv install --dev
-        working-directory: ./backend
+        working-directory: ./starter/backend
 
       - name: Run testing
         run: pipenv run test
-        working-directory: ./backend
+        working-directory: ./starter/backend
 
   build:
     runs-on: ubuntu-latest
@@ -69,7 +69,7 @@ jobs:
             ${{ runner.os }}-buildx-
 
       - name: Build Docker image
-        run: docker build -t movie-picture-backend:${{ github.sha }} ./backend
+        run: docker build -t course-4-backend:${{ github.sha }} ./starter/backend
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -85,8 +85,8 @@ jobs:
 
       - name: Push to Amazon ECR
         run: |
-          docker tag movie-picture-backend:${{ github.sha }} ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/movie-picture-backend:${{ github.sha }}
-          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/movie-picture-backend:${{ github.sha }}
+          docker tag course-4-backend:${{ github.sha }} ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/course-4-backend:${{ github.sha }}
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/course-4-backend:${{ github.sha }}
 
   deploy:
     runs-on: ubuntu-latest
@@ -114,10 +114,10 @@ jobs:
 
       - name: Update Kubernetes manifests
         run: |
-          kustomize edit set image backend=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/movie-picture-backend:${{ github.sha }}
-        working-directory: ./backend/k8s
+          kustomize edit set image backend=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/course-4-backend:${{ github.sha }}
+        working-directory: ./starter/backend/k8s
 
       - name: Apply Kubernetes manifests
         run: |
           kustomize build | kubectl apply -f -
-        working-directory: ./backend/k8s
+        working-directory: ./starter/backend/k8s
